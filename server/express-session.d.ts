@@ -1,7 +1,6 @@
-// In a file like express-session.d.ts
 import session from 'express-session';
-import { Game } from 'mystery-mansion-electronic-assistant';
 
+// This is the client session object
 declare module 'express-session' {
   interface SessionData {
     seed: string | undefined;
