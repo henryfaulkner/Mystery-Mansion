@@ -1,0 +1,37 @@
+{
+  "name": "mystery-mansion-electronic-assistant",
+  "version": "1.0.0",
+  "description": "This package simulates Mystery Mansion's electronic assistant for the purpose of playing the board game.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "assets"
+  ],
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "copy-assets": "copyfiles -u 1 ./assets/**/* dist/assets && copyfiles -u 1 ./assets/**/**/* dist/assets",
+    "prepublishOnly": "npm run build && npm run copy-assets"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henryfaulkner/Mystery-Mansion.git"
+  },
+  "author": "Henry Faulkner",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/henryfaulkner/Mystery-Mansion/issues"
+  },
+  "homepage": "https://github.com/henryfaulkner/Mystery-Mansion#readme",
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "copyfiles": "^2.4.1",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "seedrandom": "^3.0.5",
+    "speaker": "^0.5.5"
+  }
+}

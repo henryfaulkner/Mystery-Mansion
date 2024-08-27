@@ -1,0 +1,30 @@
+{
+  "name": "mystery-mansion-server",
+  "version": "1.0.0",
+  "description": "This is the server, which will host a RESTful API to make library calls on the client's behalf.",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henryfaulkner/Mystery-Mansion.git"
+  },
+  "author": "Henry Faulkner",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/henryfaulkner/Mystery-Mansion/issues"
+  },
+  "homepage": "https://github.com/henryfaulkner/Mystery-Mansion#readme",
+  "devDependencies": {
+    "@types/express": "^4.17.1",
+    "@types/express-session": "^1.18.0",
+    "@types/node": "^22.5.0",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-session": "^1.18.0"
+  }
+}
