@@ -4,7 +4,9 @@
   "description": "This is the server, which will host a RESTful API to make library calls on the client's behalf.",
   "main": "dist/index.js",
   "scripts": {
-    "start": "tsc && node dist/index.js",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "local": "tsc && node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
