@@ -1,0 +1,25 @@
+{
+  "name": "mystery-mansion-webcontent",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henryfaulkner/Mystery-Mansion.git"
+  },
+  "author": "Ben Phillips",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/henryfaulkner/Mystery-Mansion/issues"
+  },
+  "homepage": "https://github.com/henryfaulkner/Mystery-Mansion#readme",
+  "description": "",
+  "dependencies": {
+    "speaker": "^0.5.5"
+  }
+}

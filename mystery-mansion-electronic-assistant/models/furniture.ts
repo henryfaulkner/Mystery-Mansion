@@ -1,10 +1,12 @@
+import { Note } from "./note";
+
 /**
  * A single piece of furniture.
  */
 export class Furniture {
     name: string;
     code: number;
-    note: string | null;
+    note: Note | null;
     filename: string;
 
     constructor(name: string) {

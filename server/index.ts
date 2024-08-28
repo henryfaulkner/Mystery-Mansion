@@ -4,6 +4,8 @@ import { playAudio, Game } from 'mystery-mansion-electronic-assistant';
 import { reqClientError, reqServerError, reqSuccess } from './lib/format-api-responses';
 import IApiResponse from './interfaces/api-response';
 import { error } from 'console';
+import IApiBody from './interfaces/generic-api-body';
+import IGenericApiBody from './interfaces/generic-api-body';
 const app = express();
 const port = 3000;
 
@@ -12,7 +14,7 @@ app.use(session({
   secret: 'your-secret-key', // Replace with a strong secret in production
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: true } // Set to true if using HTTPS
+  cookie: { secure: false } // Set to true if using HTTPS
 }));
 
 app.get('/welcome', (req: Request, res: Response) => {
@@ -53,6 +55,24 @@ app.get('/test-seed', (req: Request, res: Response) => {
     const result = game.getRng();
     
     const resBody = reqSuccess<number>(result);
+    return res.status(resBody.statusCode).json(resBody);
+  } catch (error) {
+    console.log(error)
+    const resBody = reqServerError<{}>({}, error, ['An error occurred on the server.'])
+    return res.status(resBody.statusCode).json(resBody);
+  }
+});
+
+app.get('/progress', (req: Request, res: Response) => {
+  try {
+    if (!validateSession(req)) {
+      const resBody = reqClientError<string[]>(['Server session is not valid.'], ["Please start a new game."]);
+      return res.status(resBody.statusCode).json(resBody);
+    }
+    
+    const result = null;
+    
+    const resBody = reqSuccess<IGenericApiBody>(result);
     return res.status(resBody.statusCode).json(resBody);
   } catch (error) {
     console.log(error)

@@ -1,16 +1,19 @@
+import { Furniture } from "./furniture";
+import { ItemOrPerson } from "./item-or-person";
+
 /**
  * A note is the data holder for each piece of furniture.
  */
 export class Note {
     money: boolean;
     ask: boolean;
-    item: string | null;
-    person: string | null;
+    item: ItemOrPerson | null;
+    person: ItemOrPerson | null;
     clue: number;
     trapdoor: boolean;
     secret: string | null;
-    notIn: string | null;
-    lookIn: string | null;
+    notIn: Furniture | null;
+    lookIn: Furniture | null;
 
     constructor() {
         this.money = false;       // Contains the money

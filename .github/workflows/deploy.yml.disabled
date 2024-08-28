@@ -1,0 +1,39 @@
+name: Deploy Node.js Express API to Azure Web App
+
+on:
+  push:
+    branches:
+      - main # Change this to your main branch
+
+jobs:
+  build-and-deploy-server:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20" # Specify the Node.js version you're using
+
+      - name: "Change to Server Directory"
+        run: cd server
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run build # Remove this step if your project doesn't require a build step
+
+      # - name: Test the project
+      #   run: npm test
+
+      - name: "Deploy to Azure Web App"
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_SERVER_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_SERVER_PUBLISH_PROFILE }}
+          slot-name: "production"
+          package: server

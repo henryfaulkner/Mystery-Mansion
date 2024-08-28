@@ -1,14 +1,16 @@
+import { Furniture } from "./furniture";
+
 /**
  * A single room.
  */
 export class Room {
     name: string;
     code: number;
-    furniture: string[]; // Assuming furniture is represented by an array of strings
+    furniture: number[]; 
     locked: boolean;
     filename: string;
 
-    constructor(name: string, initialFurniture: string[]) {
+    constructor(name: string, initialFurniture: number[]) {
         this.name = name;
         this.code = -1;
         this.furniture = initialFurniture;
@@ -29,6 +31,6 @@ export class Room {
 
     containsFurniture(furnitureNumber: number): boolean {
         // Assuming furniture number is represented as a string for simplicity
-        return this.furniture.includes(furnitureNumber.toString());
+        return this.furniture.includes(furnitureNumber);
     }
 }
