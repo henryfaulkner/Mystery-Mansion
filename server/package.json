@@ -28,6 +28,6 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-session": "^1.18.0",
-    "mystery-mansion-electronic-assistant": "^1.0.0"
+    "mystery-mansion-electronic-assistant": "^1.0.1"
   }
 }
