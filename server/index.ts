@@ -12,7 +12,7 @@ app.use(session({
   secret: 'your-secret-key', // Replace with a strong secret in production
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false } // Set to true if using HTTPS
+  cookie: { secure: true } // Set to true if using HTTPS
 }));
 
 app.get('/welcome', (req: Request, res: Response) => {
