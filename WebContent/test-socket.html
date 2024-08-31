@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Client</title>
+</head>
+<body>
+    <h1>WebSocket Client</h1>
+    <button id="sendWelcome">Send Welcome</button>
+    <button id="startGame">Start Game</button>
+    <button id="testSeed">Test Seed</button>
+    <button id="getProgress">Get Progress</button>
+
+    <script>
+        const socket = new WebSocket('ws://localhost:3000');
+
+        socket.addEventListener('open', (event) => {
+            console.log('Connected to the server');
+        });
+
+        socket.addEventListener('message', (event) => {
+            console.log('Message from server:', event.data);
+        });
+
+        document.getElementById('sendWelcome').addEventListener('click', () => {
+            socket.send(JSON.stringify({ action: 'welcome' }));
+        });
+
+        document.getElementById('startGame').addEventListener('click', () => {
+            const seed = prompt("Enter seed:");
+            socket.send(JSON.stringify({ action: 'startGame', data: { seed } }));
+        });
+
+        document.getElementById('testSeed').addEventListener('click', () => {
+            socket.send(JSON.stringify({ action: 'testSeed' }));
+        });
+
+        document.getElementById('getProgress').addEventListener('click', () => {
+            socket.send(JSON.stringify({ action: 'progress' }));
+        });
+    </script>
+</body>
+</html>

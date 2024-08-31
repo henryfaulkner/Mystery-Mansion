@@ -23,11 +23,14 @@
     "@types/express": "^4.17.1",
     "@types/express-session": "^1.18.0",
     "@types/node": "^22.5.0",
+    "@types/ws": "^8.5.12",
     "typescript": "^5.5.4"
   },
   "dependencies": {
     "express": "^4.17.1",
     "express-session": "^1.18.0",
-    "mystery-mansion-electronic-assistant": "^1.0.1"
+    "mystery-mansion-electronic-assistant": "^1.0.1",
+    "socket.io": "^4.7.5",
+    "ws": "^8.18.0"
   }
 }

@@ -1,92 +1,106 @@
-import express, { Request, Response } from 'express';
-import session from 'express-session';
-import { playAudio, Game } from 'mystery-mansion-electronic-assistant';
+import express from 'express';
+import { Game } from 'mystery-mansion-electronic-assistant';
 import { reqClientError, reqServerError, reqSuccess } from './lib/format-api-responses';
-import IApiResponse from './interfaces/api-response';
-import { error } from 'console';
-import IApiBody from './interfaces/generic-api-body';
-import IGenericApiBody from './interfaces/generic-api-body';
+import WebSocket from 'ws'; 
 const app = express();
 const port = 3000;
 
-// Set up session middleware
-app.use(session({
-  secret: 'your-secret-key', // Replace with a strong secret in production
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false } // Set to true if using HTTPS
-}));
-
-app.get('/welcome', (req: Request, res: Response) => {
-  try {
-    playAudio('welcome.wav');
-    const resBody = reqSuccess<string>('Welcome!');
-    return res.status(resBody.statusCode).json(resBody);
-  } catch (error) {
-    const resBody = reqServerError<{}>({}, error, ['An error occurred on the server.'])
-    return res.status(resBody.statusCode).json(resBody);
-  }
+const server = app.listen(port, () => {
+  console.log(`Express is listening at http://localhost:${port}`);
 });
 
-// uses optional route parameter
-app.get('/start-game/:seed?', (req: Request, res: Response) => {
-  try {
-    const { seed } = req.params;
+// Create a WebSocket server and attach it to the HTTP server
+const wss = new WebSocket.Server({ server });
 
-    // Initialize or update the session with game state
-    req.session.seed = new Game(seed).getSeed();
+wss.on('connection', (ws) => {
+  console.log('New client connected');
+  var game: Game;
 
-    const resBody = reqSuccess<string[]>(["New session created."]);
-    return res.status(resBody.statusCode).json(resBody);
-  } catch (error) { 
-    const resBody = reqServerError<{}>({}, error, ['An error occurred on the server.'])
-    return res.status(resBody.statusCode).json(resBody);
-  }
-});
+  // Handle incoming messages
+  ws.on('message', (message) => {
+    try {
+      const parsedMessage = JSON.parse(message.toString());
+      const { action, data } = parsedMessage;
 
-app.get('/test-seed', (req: Request, res: Response) => {
-  try {
-    if (!validateSession(req)) {
-      const resBody = reqClientError<string[]>(['Server session is not valid.'], ["Please start a new game."]);
-      return res.status(resBody.statusCode).json(resBody);
+      switch (action) {
+        case 'welcome':
+          try {
+            ws.send(JSON.stringify(reqSuccess<string>('Welcome!')));
+          } catch (error) {
+            ws.send(JSON.stringify(reqServerError<{}>({}, error, ['An error occurred while welcoming.'])));
+          }
+          break;
+
+        case 'startGame':
+          try {
+            const seed = data?.seed;
+            // Initialize or update the session with game state
+            game = new Game(seed);
+            ws.send(JSON.stringify(reqSuccess<string[]>(["New session created."])));
+          } catch (error) {
+            ws.send(JSON.stringify(reqServerError<{}>({}, error, ['An error occurred while starting the game.'])));
+          }
+          break;
+
+        case 'testSeed':
+          try {
+            if (!validateSession(game)) {
+              ws.send(JSON.stringify(reqClientError<string[]>(['Server session is not valid.'], ["Please start a new game."])));
+              break;
+            }
+            const result = game.getRng();
+            ws.send(JSON.stringify(reqSuccess<number>(result)));
+          } catch (error) {
+            ws.send(JSON.stringify(reqServerError<{}>({}, error, ['An error occurred while testing the seed.'])));
+          }
+          break;
+
+        case 'explore-furniture':
+          try {
+            if (!validateSession(game)) {
+              ws.send(JSON.stringify(reqClientError<string[]>(['Server session is not valid.'], ["Please start a new game."])));
+              break;
+            }
+            const progressResult = null; // Replace with actual progress logic
+            ws.send(JSON.stringify(reqSuccess(progressResult)));
+          } catch (error) {
+            ws.send(JSON.stringify(reqServerError<{}>({}, error, ['An error occurred while retrieving progress.'])));
+          }
+          break;
+
+        case 'explore-room':
+          try {
+            if (!validateSession(game)) {
+              ws.send(JSON.stringify(reqClientError<string[]>(['Server session is not valid.'], ["Please start a new game."])));
+              break;
+            }
+            const progressResult = null; // Replace with actual progress logic
+            ws.send(JSON.stringify(reqSuccess(progressResult)));
+          } catch (error) {
+            ws.send(JSON.stringify(reqServerError<{}>({}, error, ['An error occurred while retrieving progress.'])));
+          }
+          break;
+
+        default:
+          try {
+            ws.send(JSON.stringify(reqClientError<string[]>(['Unknown action.'], [])));
+          } catch (error) {
+            ws.send(JSON.stringify(reqServerError<{}>({}, error, ['An error occurred while handling the action.'])));
+          }
+      }
+    } catch (parseError) {
+      ws.send(JSON.stringify(reqClientError<string[]>(['Invalid message format.'], [])));
     }
-    
-    const game = new Game(req.session.seed);
-    const result = game.getRng();
-    
-    const resBody = reqSuccess<number>(result);
-    return res.status(resBody.statusCode).json(resBody);
-  } catch (error) {
-    console.log(error)
-    const resBody = reqServerError<{}>({}, error, ['An error occurred on the server.'])
-    return res.status(resBody.statusCode).json(resBody);
-  }
-});
+  });
 
-app.get('/progress', (req: Request, res: Response) => {
-  try {
-    if (!validateSession(req)) {
-      const resBody = reqClientError<string[]>(['Server session is not valid.'], ["Please start a new game."]);
-      return res.status(resBody.statusCode).json(resBody);
-    }
-    
-    const result = null;
-    
-    const resBody = reqSuccess<IGenericApiBody>(result);
-    return res.status(resBody.statusCode).json(resBody);
-  } catch (error) {
-    console.log(error)
-    const resBody = reqServerError<{}>({}, error, ['An error occurred on the server.'])
-    return res.status(resBody.statusCode).json(resBody);
-  }
-});
-
-app.listen(port, () => {
-  return console.log(`Express is listening at http://localhost:${port}`);
+  // Handle client disconnection
+  ws.on('close', () => {
+    console.log('Client disconnected');
+  });
 });
 
 // true means game session is valid
-function validateSession(req: Request): boolean {
-  if (req.session?.seed) return true
+function validateSession(game?: Game): boolean {
+  if (game) return true;
   return false;
 }
