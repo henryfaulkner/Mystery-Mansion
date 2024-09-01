@@ -6,20 +6,20 @@ import { Furniture } from "./furniture";
 export class Room {
     name: string;
     code: number;
-    furniture: number[]; 
+    furnitureCodes: number[]; 
     locked: boolean;
     filename: string;
 
-    constructor(name: string, initialFurniture: number[]) {
+    constructor(name: string, furnitureCodes: number[], code: number) {
         this.name = name;
-        this.code = -1;
-        this.furniture = initialFurniture;
+        this.code = code;
+        this.furnitureCodes = furnitureCodes;
         this.locked = false;
-        this.filename = `rooms/${name.toLowerCase()}`;
+        this.filename = `rooms/${name.toLowerCase()}.wav`;
     }
 
     toString(): string {
-        const contains = this.furniture.join(', ');
+        const contains = this.furnitureCodes.join(', ');
         const lockedString = this.locked ? ' [LOCKED]' : '';
 
         return `${this.code.toString().padStart(2, ' ')}: ${this.name} - Contains: ${contains}${lockedString}`;
@@ -29,8 +29,8 @@ export class Room {
         return `${this.code.toString().padStart(2, ' ')}: ${this.name}`;
     }
 
-    containsFurniture(furnitureNumber: number): boolean {
+    containsFurniture(furnitureCode: number): boolean {
         // Assuming furniture number is represented as a string for simplicity
-        return this.furniture.includes(furnitureNumber);
+        return this.furnitureCodes.includes(furnitureCode);
     }
 }

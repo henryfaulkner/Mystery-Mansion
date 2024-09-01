@@ -9,12 +9,12 @@ export class Furniture {
     note: Note | null;
     filename: string;
 
-    constructor(name: string) {
+    constructor(name: string, code: number) {
         this.name = name;
-        this.code = -1;
+        this.code = code;
         this.note = null;
 
-        this.filename = `furniture/${name.toLowerCase()}`;
+        this.filename = `furniture/${name.toLowerCase()}.wav`;
         if (name.includes('#')) {
             this.filename = this.filename.substring(0, name.indexOf('#') - 1);
         }
