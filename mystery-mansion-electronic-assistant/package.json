@@ -1,6 +1,6 @@
 {
   "name": "mystery-mansion-electronic-assistant",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This package simulates Mystery Mansion's electronic assistant for the purpose of playing the board game.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

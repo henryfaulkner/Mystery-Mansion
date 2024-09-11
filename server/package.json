@@ -29,7 +29,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-session": "^1.18.0",
-    "mystery-mansion-electronic-assistant": "^1.0.1",
+    "mystery-mansion-electronic-assistant": "^1.0.2",
     "socket.io": "^4.7.5",
     "ws": "^8.18.0"
   }

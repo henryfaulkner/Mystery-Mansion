@@ -1,5 +1,5 @@
-import express from 'express';
-import { Game } from 'mystery-mansion-electronic-assistant';
+import express, { Request, Response } from 'express';
+import { Game, Process } from 'mystery-mansion-electronic-assistant';
 import { reqClientError, reqServerError, reqSuccess } from './lib/format-api-responses';
 import WebSocket from 'ws'; 
 const app = express();
@@ -7,6 +7,16 @@ const port = 3000;
 
 const server = app.listen(port, () => {
   console.log(`Express is listening at http://localhost:${port}`);
+});
+
+app.get('/ping', (req: Request, res: Response) => {
+  try {
+    const resBody = reqSuccess<string>('Pong!');
+    return res.status(resBody.statusCode).json(resBody);
+  } catch (error) {
+    const resBody = reqServerError<{}>({}, error, ['An error occurred on the server.'])
+    return res.status(resBody.statusCode).json(resBody);
+  }
 });
 
 // Create a WebSocket server and attach it to the HTTP server
@@ -55,26 +65,18 @@ wss.on('connection', (ws) => {
           }
           break;
 
-        case 'explore-furniture':
+        case 'explore':
           try {
             if (!validateSession(game)) {
               ws.send(JSON.stringify(reqClientError<string[]>(['Server session is not valid.'], ["Please start a new game."])));
               break;
             }
-            const progressResult = null; // Replace with actual progress logic
-            ws.send(JSON.stringify(reqSuccess(progressResult)));
-          } catch (error) {
-            ws.send(JSON.stringify(reqServerError<{}>({}, error, ['An error occurred while retrieving progress.'])));
-          }
-          break;
-
-        case 'explore-room':
-          try {
-            if (!validateSession(game)) {
-              ws.send(JSON.stringify(reqClientError<string[]>(['Server session is not valid.'], ["Please start a new game."])));
-              break;
+            let progressResult;
+            if ((data.process as Process).action === 'explore-room') {
+              game.exploreRoom(data.process, data.code, data.userInput);
+            } else if ((data as Process).action === 'explore-furniture') {
+              game.exploreFurniture(data.process, data.code, data.userInput);
             }
-            const progressResult = null; // Replace with actual progress logic
             ws.send(JSON.stringify(reqSuccess(progressResult)));
           } catch (error) {
             ws.send(JSON.stringify(reqServerError<{}>({}, error, ['An error occurred while retrieving progress.'])));
