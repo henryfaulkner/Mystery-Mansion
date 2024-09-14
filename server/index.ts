@@ -3,7 +3,7 @@ import { Game, Process } from 'mystery-mansion-electronic-assistant';
 import { reqClientError, reqServerError, reqSuccess } from './lib/format-api-responses';
 import WebSocket from 'ws'; 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const server = app.listen(port, () => {
   console.log(`Express is listening at http://localhost:${port}`);
